@@ -1,0 +1,6 @@
+@Racing.WebApi_HostAddress = http://localhost:5197
+
+GET {{Racing.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
