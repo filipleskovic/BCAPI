@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Npgsql;
 
 namespace Racing.WebApi.Controllers
 {
@@ -6,52 +7,61 @@ namespace Racing.WebApi.Controllers
     [Route("[controller]")]
     public class DriverController : ControllerBase
     {
-        [HttpGet("GetDriver/{id:int}")]
-        public IActionResult GetDriverById(int id)
+        string connectionString = "Host=localhost;Port=5432;Database=Racing;User ID=postgres;Password=ficofika9;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;Connection Lifetime=0";
+
+        [HttpGet("GetDriver/{id:Guid}")]
+        public IActionResult GetDriverById(Guid id)
         {
-            Driver driver = DriverRepository.GetDriverByiD(id);
-            if (driver == null)
-            {
-                return NotFound(new { Message = "Driver not found." });
-            }
-            return Ok(driver);
+            return Ok();
         }
         [HttpPost("AddNewDriver")]
         public IActionResult AddDriver([FromBody] Driver newDriver)
         {
-            if (newDriver == null)
+            NpgsqlConnection _connection = new NpgsqlConnection(connectionString);
+
             {
-                return BadRequest();
+                if (newDriver == null)
+                {
+                    return BadRequest();
+                }
+                string cmdText = "INSERT INTO \"Driver\"( \"Id\",\"FirstName\",\"LastName\",\"Age\",\"FormulaId\",\"IsActive\") VALUES(@Id,@FirstName,@LastName,@Age,@FormulaId,@IsActive)";
+                NpgsqlCommand command = new NpgsqlCommand(cmdText, _connection);
+                _connection.Open();
+
+                command.Parameters.AddWithValue("@Id", Guid.NewGuid());
+                command.Parameters.AddWithValue("@Name", newDriver.FirstName);
+                command.Parameters.AddWithValue("@Horsepower", newDriver.LastName);
+                command.Parameters.AddWithValue("@TopSpeed", newDriver.Age);
+                command.Parameters.AddWithValue("@Acceleration", newDriver.FormulaId);
+                command.Parameters.AddWithValue("@IsActive", true);
+                var var = command.ExecuteNonQuery();
+                _connection.Close();
+                if (var > 0)
+                {
+                    return Ok(var);
+                }
+                else
+                {
+                    return BadRequest();
+                }
             }
-            DriverRepository.AddDriver(newDriver);
-            return Ok(newDriver);
         }
-        [HttpDelete("DeleteDriver/{id:int}")]
-        public IActionResult DeleteDriverById(int id) {
-            Driver driver = DriverRepository.GetDriverByiD(id);
-            if (driver == null)
-                return NotFound(new { Message = "Driver not found" });
-            DriverRepository.drivers.Remove(driver);
+        [HttpDelete("DeleteDriver/{id:Guid}")]
+        public IActionResult DeleteDriverById(Guid id) {
+            
             return Ok();
 
         }
-        [HttpPut("UpdateDriver/{id:int}")]
-        public IActionResult UpdateDriverById(int id, [FromBody] Driver newDriver)
+        [HttpPut("UpdateDriver/{id:Guid}")]
+        public IActionResult UpdateDriverById(Guid id, [FromBody] Driver newDriver)
         {
-            if (newDriver == null)
-            {
-                return BadRequest();
-            }
-            Driver driver = DriverRepository.GetDriverByiD(id);
-            if (driver == null)
-                return NotFound(new { Message = "Driver not found" });
-            driver=DriverRepository.UpdateDriver(driver, newDriver);
-            return Ok(driver);
+            
+            return Ok(newDriver);
         }
         [HttpGet("Drivers")]
         public IActionResult GetDriverList()
         {
-            return Ok(DriverRepository.drivers);
+            return Ok();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿namespace Racing.WebApi
+﻿/*
+namespace Racing.WebApi
 {
     public static class FormulaRepository
     {
@@ -11,7 +12,7 @@
         public static void AddFormula(Formula formula)
         {
             int newID = formulas.Any() ? formulas.Max(f => f.ID) + 1 : 1;
-            formula.ID = newID;
+            formula.Id1 = newID;
             formulas.Add(formula);
         }
         public static void DeleteFormula(Formula formula)
@@ -25,15 +26,9 @@
         public static Formula UpdateFormula(Formula formula, Formula newFormula)
         {
             formula.Name = newFormula.Name;
-            formula.Horsepower = newFormula.Horsepower;
-            formula.TopSpeed = newFormula.TopSpeed;
-            formula.Driver = newFormula.Driver;
-            formula.Acceleration = newFormula.Acceleration;
-            formula.IsPraticipating=newFormula.IsPraticipating;
-            formula.Driver.FirstName=newFormula.Driver.FirstName;
-            formula.Driver.LastName=newFormula.Driver.LastName;
-            formula.Driver.Age= newFormula.Driver.Age;
+        
             return formula;
         }
     }
 }
+*/
