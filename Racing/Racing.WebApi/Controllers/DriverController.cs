@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
 using Npgsql;
+using Racing.Service;
+using Racing.Models;
+using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Racing.WebApi.Controllers
 {
@@ -8,60 +12,96 @@ namespace Racing.WebApi.Controllers
     public class DriverController : ControllerBase
     {
         string connectionString = "Host=localhost;Port=5432;Database=Racing;User ID=postgres;Password=ficofika9;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;Connection Lifetime=0";
-
-        [HttpGet("GetDriver/{id:Guid}")]
-        public IActionResult GetDriverById(Guid id)
+        DriverService driverService;
+        public DriverController()
         {
-            return Ok();
+            driverService = new DriverService(connectionString);
+        }
+        [HttpGet("GetDriver/{id:Guid}")]
+        public async Task<IActionResult> GetDriverById(Guid id)
+        {
+            try
+            {
+                Driver driver = await driverService.GetAsync(id);
+                Debug.WriteLine(driver);
+                return Ok(driver);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [HttpPost("AddNewDriver")]
-        public IActionResult AddDriver([FromBody] Driver newDriver)
+        public async Task<IActionResult> AddDriver([FromBody] Driver newDriver)
         {
-            NpgsqlConnection _connection = new NpgsqlConnection(connectionString);
-
+            if (newDriver == null)
             {
-                if (newDriver == null)
-                {
-                    return BadRequest();
-                }
-                string cmdText = "INSERT INTO \"Driver\"( \"Id\",\"FirstName\",\"LastName\",\"Age\",\"FormulaId\",\"IsActive\") VALUES(@Id,@FirstName,@LastName,@Age,@FormulaId,@IsActive)";
-                NpgsqlCommand command = new NpgsqlCommand(cmdText, _connection);
-                _connection.Open();
+                return BadRequest();
+            }
+            try
+            {
+                int commits = await driverService.PostAsync(newDriver);
 
-                command.Parameters.AddWithValue("@Id", Guid.NewGuid());
-                command.Parameters.AddWithValue("@Name", newDriver.FirstName);
-                command.Parameters.AddWithValue("@Horsepower", newDriver.LastName);
-                command.Parameters.AddWithValue("@TopSpeed", newDriver.Age);
-                command.Parameters.AddWithValue("@Acceleration", newDriver.FormulaId);
-                command.Parameters.AddWithValue("@IsActive", true);
-                var var = command.ExecuteNonQuery();
-                _connection.Close();
-                if (var > 0)
-                {
-                    return Ok(var);
-                }
-                else
+                if (commits == 0)
                 {
                     return BadRequest();
                 }
+                return Ok($"Dodano vozaća: {commits}");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
         [HttpDelete("DeleteDriver/{id:Guid}")]
-        public IActionResult DeleteDriverById(Guid id) {
-            
-            return Ok();
+        public async Task<IActionResult> DeleteDriverById(Guid id) {
+
+            try
+            {
+                int commits = await driverService.DeleteAsync(id);
+                if (commits == 0)
+                {
+                    return BadRequest();
+                }
+                return Ok("Uspješno obrisana vozać");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
         }
         [HttpPut("UpdateDriver/{id:Guid}")]
-        public IActionResult UpdateDriverById(Guid id, [FromBody] Driver newDriver)
+        public async Task<IActionResult> UpdateDriverById(Guid id, [FromBody] Driver newDriver)
         {
-            
-            return Ok(newDriver);
+
+            try
+            {
+                int commits = await driverService.PutAsync(newDriver, id);
+                if (commits == 0)
+                {
+                    return BadRequest();
+                }
+                return Ok("Uspješno updateana formula");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [HttpGet("Drivers")]
-        public IActionResult GetDriverList()
+        public async Task<IActionResult> GetDriverList()
         {
-            return Ok();
+            try
+            {
+                IList<Driver> drivers = await driverService.GetAllAsync();
+                return Ok(drivers);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
+
