@@ -1,5 +1,4 @@
-﻿
-using Npgsql;
+﻿using Npgsql;
 using Racing.Models;
 namespace Racing.Repository
 {

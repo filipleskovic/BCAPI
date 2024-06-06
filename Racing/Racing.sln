@@ -9,18 +9,22 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Racing.WebApi", "Racing.Web
 		{B95F8EF2-7136-49B0-A7DD-98180100042F} = {B95F8EF2-7136-49B0-A7DD-98180100042F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Racing.Service", "Racing.Service\Racing.Service.csproj", "{4985E888-C6F0-4D51-BB67-A12608883DE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Racing.Service", "Racing.Service\Racing.Service.csproj", "{4985E888-C6F0-4D51-BB67-A12608883DE8}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3B552E29-8A45-48D5-B246-5B0E2F44A97E} = {3B552E29-8A45-48D5-B246-5B0E2F44A97E}
 		{B95F8EF2-7136-49B0-A7DD-98180100042F} = {B95F8EF2-7136-49B0-A7DD-98180100042F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Racing.Models", "Racing.Models\Racing.Models.csproj", "{B95F8EF2-7136-49B0-A7DD-98180100042F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Racing.Models", "Racing.Models\Racing.Models.csproj", "{B95F8EF2-7136-49B0-A7DD-98180100042F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Racing.Repository", "Racing.Repository\Racing.Repository.csproj", "{3B552E29-8A45-48D5-B246-5B0E2F44A97E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Racing.Repository", "Racing.Repository\Racing.Repository.csproj", "{3B552E29-8A45-48D5-B246-5B0E2F44A97E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{B95F8EF2-7136-49B0-A7DD-98180100042F} = {B95F8EF2-7136-49B0-A7DD-98180100042F}
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository.Common", "Repository.Common\Repository.Common.csproj", "{23ECE1B5-7AD4-4F4E-9D48-CE8FADCBC03D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.Common", "Service.Common\Service.Common.csproj", "{211D8BAA-54DD-491D-B687-6C7161AC17A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +48,14 @@ Global
 		{3B552E29-8A45-48D5-B246-5B0E2F44A97E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B552E29-8A45-48D5-B246-5B0E2F44A97E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B552E29-8A45-48D5-B246-5B0E2F44A97E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23ECE1B5-7AD4-4F4E-9D48-CE8FADCBC03D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23ECE1B5-7AD4-4F4E-9D48-CE8FADCBC03D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23ECE1B5-7AD4-4F4E-9D48-CE8FADCBC03D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23ECE1B5-7AD4-4F4E-9D48-CE8FADCBC03D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{211D8BAA-54DD-491D-B687-6C7161AC17A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{211D8BAA-54DD-491D-B687-6C7161AC17A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{211D8BAA-54DD-491D-B687-6C7161AC17A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{211D8BAA-54DD-491D-B687-6C7161AC17A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

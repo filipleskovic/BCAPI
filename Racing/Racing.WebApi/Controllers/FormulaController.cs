@@ -16,18 +16,17 @@ namespace Racing.WebApi.Controllers
     [Route("[controller]")]
     public class FormulaController : ControllerBase
     {
-        string connectionString = "Host=localhost;Port=5432;Database=Racing;User ID=postgres;Password=ficofika9;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;Connection Lifetime=0";
-        FormulaService formulaService;
-        public FormulaController(IConfiguration configuration)
+        private IService<Formula> _service;
+        public FormulaController(IService<Formula> _Service)
         {
-            formulaService = new FormulaService(connectionString);
+            this._service = _Service;
         }
         [HttpGet("GetFormula/{id:Guid}")]
         public async Task<IActionResult> Get(Guid id)
         {
             try
             {
-                Formula formula = await formulaService.GetAsync(id);
+                Formula formula = await _service.GetAsync(id);
                 Debug.WriteLine(formula);
                 return Ok(formula);
             }
@@ -47,7 +46,7 @@ namespace Racing.WebApi.Controllers
             }
             try
             {
-                int commits = await formulaService.PostAsync(newFormula);
+                int commits = await _service.PostAsync(newFormula);
 
                 if (commits == 0)
                 {
@@ -66,7 +65,7 @@ namespace Racing.WebApi.Controllers
         {
             try
             {
-                int commits = await formulaService.DeleteAsync(id);
+                int commits = await _service.DeleteAsync(id);
                 if (commits == 0)
                 {
                     return BadRequest();
@@ -85,7 +84,7 @@ namespace Racing.WebApi.Controllers
         {
             try
             {
-                int commits = await formulaService.PutAsync(newFormula, id);
+                int commits = await _service.PutAsync(newFormula, id);
                 if (commits == 0)
                 {
                     return BadRequest();
@@ -102,7 +101,7 @@ namespace Racing.WebApi.Controllers
         {
             try
             {
-                IList<Formula> formulas = await formulaService.GetAllAsync();
+                IList<Formula> formulas = await _service.GetAllAsync();
                 return Ok(formulas);
             }
             catch (Exception ex)
@@ -110,13 +109,13 @@ namespace Racing.WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("FilteredFormulas")]
+        /*[HttpGet("FilteredFormulas")]
         public async Task<IActionResult> Get(string? name=null, int? minTopSpeed=null, int? maxTopSpeed=null, string? orderDirection="ASC", string? orderBy = "Name")
         {
             try
             {
                 FormulaGet formulaGet = new FormulaGet(new FormulaFilter(name, minTopSpeed, maxTopSpeed), new FormulaSort(orderBy, orderDirection));
-                IList<Formula> formulas = await formulaService.GetAllAsync(formulaGet);
+                IList<Formula> formulas = await _Service.GetAllAsync(formulaGet);
                 return Ok(formulas);
             }
             catch (Exception ex)
@@ -124,6 +123,6 @@ namespace Racing.WebApi.Controllers
                 return BadRequest(ex.Message);
             }
 
-        }
+        }*/
     }
 }

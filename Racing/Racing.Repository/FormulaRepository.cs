@@ -1,5 +1,4 @@
 ﻿using Racing.Models.FormulaSearch;
-
 using Npgsql;
 using Racing.Models;
 using System.Text;
