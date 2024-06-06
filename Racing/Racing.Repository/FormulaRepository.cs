@@ -2,9 +2,10 @@
 using Npgsql;
 using Racing.Models;
 using System.Text;
+using Repository.Common;
 namespace Racing.Repository
 {
-    public class FormulaRepository : IRepository<Formula>
+    public class FormulaRepository : IFormulaRepository
     {
         public readonly string connectionString;
         public FormulaRepository(string connectionString)
@@ -113,13 +114,13 @@ namespace Racing.Repository
             _connection.Close();
             return formulas;
         }
-        public async Task<IList<Formula>> GetAllAsync(FormulaGet formulaGet)
+        public async Task<IList<Formula>> GetAllAsync(FormulaFilter filter, FormulaSort sort)
         {
             NpgsqlConnection _connection = new NpgsqlConnection(connectionString);
 
             IList<Formula> formulas = new List<Formula>();
             NpgsqlCommand command = new NpgsqlCommand("", _connection);
-            command = MakeCommand(formulaGet,command);
+            command = MakeCommand(filter,sort,command);
             _connection.Open();
             using (var reader = command.ExecuteReader())
             {
@@ -140,35 +141,35 @@ namespace Racing.Repository
             return formulas;
         }
 
-        private NpgsqlCommand MakeCommand(FormulaGet formulaGet,NpgsqlCommand command)
+        private NpgsqlCommand MakeCommand(FormulaFilter filter, FormulaSort sort,NpgsqlCommand command)
         {
             StringBuilder builder = new StringBuilder();
             builder.Append("SELECT * FROM \"Formula\" WHERE \"IsActive\" =@IsActive ");
             command.Parameters.AddWithValue("IsActive", true);
 
-            if (formulaGet.filter.MaxTopSpeed == null && formulaGet.filter.MinTopSpeed != null)
+            if (filter.MaxTopSpeed == null && filter.MinTopSpeed != null)
             {
                 builder.Append("AND \"TopSpeed\">@MinTopSpeed ");
-                command.Parameters.AddWithValue("MinTopSpeed", formulaGet.filter.MinTopSpeed);
+                command.Parameters.AddWithValue("MinTopSpeed", filter.MinTopSpeed);
                 
             }
-            if (formulaGet.filter.MaxTopSpeed != null && formulaGet.filter.MinTopSpeed == null)
+            if (filter.MaxTopSpeed != null && filter.MinTopSpeed == null)
             {
                 builder.Append("AND \"TopSpeed\"<@MaxTopSpeed ");
-                command.Parameters.AddWithValue("MaxTopSpeed", formulaGet.filter.MaxTopSpeed);
+                command.Parameters.AddWithValue("MaxTopSpeed", filter.MaxTopSpeed);
             }
-            if (formulaGet.filter.MaxTopSpeed != null && formulaGet.filter.MinTopSpeed != null)
+            if (filter.MaxTopSpeed != null && filter.MinTopSpeed != null)
             {
                 builder.Append("AND \"TopSpeed\" BETWEEN @MinTopSpeed AND @MaxTopSpeed ");
-                command.Parameters.AddWithValue("MaxTopSpeed", formulaGet.filter.MaxTopSpeed);
-                command.Parameters.AddWithValue("MinTopSpeed", formulaGet.filter.MinTopSpeed);
+                command.Parameters.AddWithValue("MaxTopSpeed", filter.MaxTopSpeed);
+                command.Parameters.AddWithValue("MinTopSpeed", filter.MinTopSpeed);
             }
-            if (formulaGet.filter.Name != null)
+            if (filter.Name != null)
             {
                 builder.Append("AND \"Name\" LIKE @Name");
-                command.Parameters.AddWithValue("Name", formulaGet.filter.Name);
+                command.Parameters.AddWithValue("Name", filter.Name);
             }
-            builder.Append($" ORDER BY \"{formulaGet.sort.OrderBy}\" {formulaGet.sort.OrderDirection}");
+            builder.Append($" ORDER BY \"{sort.OrderBy}\" {sort.OrderDirection}");
             command.CommandText= builder.ToString();
             return command;
         }

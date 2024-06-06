@@ -3,14 +3,15 @@ using Npgsql.Replication;
 using Racing.Models;
 using Racing.Models.FormulaSearch;
 using Racing.Repository;
+using Repository.Common;
 using Service.Common;
 namespace Racing.Service
 {
     public class FormulaService:IFormulaService
     {
-        private readonly IRepository<Formula> _repository;
+        private readonly IFormulaRepository _repository;
 
-        public FormulaService(IRepository<Formula> repository)
+        public FormulaService(IFormulaRepository repository)
         {
             _repository = repository;
         }
@@ -36,9 +37,9 @@ namespace Racing.Service
         {
             return await _repository.GetAllAsync();
         }
-        /*public async Task<IList<Formula>> GetAllAsync(FormulaGet formulaGet)
+        public async Task<IList<Formula>> GetAllAsync(FormulaFilter filter, FormulaSort sort)
         {
-            return await _repository.GetAllAsync(formulaGet);
-        }*/
+            return await _repository.GetAllAsync(filter,sort);
+        }
     }
 }

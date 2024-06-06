@@ -4,6 +4,8 @@ using Racing.Service;
 using Racing.Models;
 using Racing.Repository;
 using Microsoft.Extensions.Hosting;
+using Service.Common;
+using Repository.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
@@ -17,14 +19,14 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
         var config = context.Resolve<IConfiguration>();
         var connectionString = config.GetConnectionString("DefaultConnection");
         return new FormulaRepository(connectionString);
-    }).As<IRepository<Formula>>().InstancePerLifetimeScope();
+    }).As<IFormulaRepository>().InstancePerLifetimeScope();
     containerBuilder.Register(context =>
     {
         var config = context.Resolve<IConfiguration>();
         var connectionString = config.GetConnectionString("DefaultConnection");
         return new DriverRepository(connectionString);
     }).As<IRepository<Driver>>().InstancePerLifetimeScope();
-    containerBuilder.RegisterType<FormulaService>().As<IService<Formula>>();
+    containerBuilder.RegisterType<FormulaService>().As<IFormulaService>();
     containerBuilder.RegisterType<DriverService>().As<IService<Driver>>();
 
 

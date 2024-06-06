@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Autofac.Core;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Npgsql;
 using Racing.Models;
 using Racing.Models.FormulaSearch;
 using Racing.Service;
+using Service.Common;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,8 +18,8 @@ namespace Racing.WebApi.Controllers
     [Route("[controller]")]
     public class FormulaController : ControllerBase
     {
-        private IService<Formula> _service;
-        public FormulaController(IService<Formula> _Service)
+        private IFormulaService _service;
+        public FormulaController(IFormulaService _Service)
         {
             this._service = _Service;
         }
@@ -109,13 +111,12 @@ namespace Racing.WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        /*[HttpGet("FilteredFormulas")]
+        [HttpGet("FilteredFormulas")]
         public async Task<IActionResult> Get(string? name=null, int? minTopSpeed=null, int? maxTopSpeed=null, string? orderDirection="ASC", string? orderBy = "Name")
         {
             try
             {
-                FormulaGet formulaGet = new FormulaGet(new FormulaFilter(name, minTopSpeed, maxTopSpeed), new FormulaSort(orderBy, orderDirection));
-                IList<Formula> formulas = await _Service.GetAllAsync(formulaGet);
+                IList<Formula> formulas = await _service.GetAllAsync(new FormulaFilter(name, minTopSpeed, maxTopSpeed), new FormulaSort(orderBy, orderDirection));
                 return Ok(formulas);
             }
             catch (Exception ex)
@@ -123,6 +124,6 @@ namespace Racing.WebApi.Controllers
                 return BadRequest(ex.Message);
             }
 
-        }*/
+        }
     }
 }
