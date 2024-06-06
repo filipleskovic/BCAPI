@@ -4,6 +4,7 @@ using Racing.Service;
 using Racing.Models;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Autofac.Core;
 
 namespace Racing.WebApi.Controllers
 {
@@ -11,18 +12,17 @@ namespace Racing.WebApi.Controllers
     [Route("[controller]")]
     public class DriverController : ControllerBase
     {
-        string connectionString = "Host=localhost;Port=5432;Database=Racing;User ID=postgres;Password=ficofika9;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;Connection Lifetime=0";
-        DriverService driverService;
-        public DriverController()
+        private IService<Driver> _Service;
+        public DriverController(IService<Driver> _service)
         {
-            driverService = new DriverService(connectionString);
+            _Service = _service;
         }
         [HttpGet("GetDriver/{id:Guid}")]
         public async Task<IActionResult> GetDriverById(Guid id)
         {
             try
             {
-                Driver driver = await driverService.GetAsync(id);
+                Driver driver = await _Service.GetAsync(id);
                 Debug.WriteLine(driver);
                 return Ok(driver);
             }
@@ -40,7 +40,7 @@ namespace Racing.WebApi.Controllers
             }
             try
             {
-                int commits = await driverService.PostAsync(newDriver);
+                int commits = await _Service.PostAsync(newDriver);
 
                 if (commits == 0)
                 {
@@ -58,7 +58,7 @@ namespace Racing.WebApi.Controllers
 
             try
             {
-                int commits = await driverService.DeleteAsync(id);
+                int commits = await _Service.DeleteAsync(id);
                 if (commits == 0)
                 {
                     return BadRequest();
@@ -77,7 +77,7 @@ namespace Racing.WebApi.Controllers
 
             try
             {
-                int commits = await driverService.PutAsync(newDriver, id);
+                int commits = await _Service.PutAsync(newDriver, id);
                 if (commits == 0)
                 {
                     return BadRequest();
@@ -94,7 +94,7 @@ namespace Racing.WebApi.Controllers
         {
             try
             {
-                IList<Driver> drivers = await driverService.GetAllAsync();
+                IList<Driver> drivers = await _Service.GetAllAsync();
                 return Ok(drivers);
             }
             catch (Exception ex)

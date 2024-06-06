@@ -7,11 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="Npgsql" Version="8.0.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Racing.Models\Racing.Models.csproj" />
+    <ProjectReference Include="..\Repository.Common\Repository.Common.csproj" />
   </ItemGroup>
 
 </Project>

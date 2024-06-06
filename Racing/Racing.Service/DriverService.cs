@@ -1,14 +1,15 @@
 ﻿using Racing.Models;
 using Racing.Repository;
+using Service.Common;
 namespace Racing.Service
 
 {
-    public class DriverService : IService<Driver>
+    public class DriverService : IDriverService
     {
-        DriverRepository _repository;
-        public DriverService(string connectionString)
+        private IRepository<Driver> _repository;
+        public DriverService(IRepository<Driver> repository)
         {
-            _repository = new DriverRepository(connectionString);
+            _repository = repository;
         }
         public async Task<Driver> GetAsync(Guid id)
         {
