@@ -23,6 +23,8 @@ namespace Racing.Service
 
         public async Task<int> PostAsync(Formula formula)
         {
+            formula.Id=Guid.NewGuid();
+            formula.IsActive = true;
             return await _repository.PostAsync(formula);
         }
         public async Task<int> PutAsync(Formula formula, Guid id)

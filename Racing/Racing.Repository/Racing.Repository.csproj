@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Racing.Models\Racing.Models.csproj" />
-    <ProjectReference Include="..\Repository.Common\Repository.Common.csproj" />
+    <ProjectReference Include="..\Repository.Common\Racing.Repository.Common.csproj" />
   </ItemGroup>
 
 </Project>

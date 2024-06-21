@@ -1,10 +1,14 @@
 ﻿using Autofac.Core;
+using Autofac.Features.Scanning;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Npgsql;
 using Racing.Models;
 using Racing.Models.FormulaSearch;
 using Racing.Service;
+using Racing.WebApi.REST_Models;
+using Racing.WebApi.RESTModels;
 using Service.Common;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,9 +23,11 @@ namespace Racing.WebApi.Controllers
     public class FormulaController : ControllerBase
     {
         private IFormulaService _service;
-        public FormulaController(IFormulaService _Service)
+        private IMapper _mapper;
+        public FormulaController(IFormulaService _service,IMapper _mapper)
         {
-            this._service = _Service;
+            this._service = _service;
+            this._mapper = _mapper;
         }
         [HttpGet("GetFormula/{id:Guid}")]
         public async Task<IActionResult> Get(Guid id)
@@ -29,8 +35,7 @@ namespace Racing.WebApi.Controllers
             try
             {
                 Formula formula = await _service.GetAsync(id);
-                Debug.WriteLine(formula);
-                return Ok(formula);
+                return Ok(_mapper.Map<FormulaGet>(formula));
             }
             catch (Exception ex)
             {
@@ -40,7 +45,7 @@ namespace Racing.WebApi.Controllers
         }
 
         [HttpPost("AddNewFormula")]
-        public async Task<IActionResult> Post(Formula newFormula)
+        public async Task<IActionResult> Post(FormulaPost newFormula)
         {
             if (newFormula == null)
             {
@@ -48,7 +53,7 @@ namespace Racing.WebApi.Controllers
             }
             try
             {
-                int commits = await _service.PostAsync(newFormula);
+                int commits = await _service.PostAsync(_mapper.Map<Formula>(newFormula));
 
                 if (commits == 0)
                 {
@@ -82,22 +87,33 @@ namespace Racing.WebApi.Controllers
 
         }
         [HttpPut("UpdateFormula/{id:Guid}")]
-        public async Task<IActionResult> UpdateFormulaById(Guid id, [FromBody] Formula newFormula)
+        public async Task<IActionResult> UpdateFormulaById(Guid id, [FromBody] FormulaPut newFormula)
         {
-            try
+            if (_service.GetAsync(id) == null)
+                return NotFound("Ne postoji taj id u bazi");
+            else
             {
-                int commits = await _service.PutAsync(newFormula, id);
-                if (commits == 0)
+                if (newFormula == null)
                 {
-                    return BadRequest();
+                    return NotFound("Mora bit nesto");
                 }
-                return Ok("Uspješno updateana formula");
+                try
+                {
+                    int commits = await _service.PutAsync(_mapper.Map<Formula>(newFormula), id);
+                    if (commits == 0)
+                    {
+                        return NotFound("ss");
+                    }
+                    return Ok("Uspješno updateana formula");
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            
         }
+
         [HttpGet("Formulas")]
         public async Task<IActionResult> GetFormulaList()
         {
