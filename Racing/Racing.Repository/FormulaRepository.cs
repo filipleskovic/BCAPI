@@ -46,12 +46,12 @@ namespace Racing.Repository
             NpgsqlCommand command = new NpgsqlCommand(cmdText, _connection);
             _connection.Open();
 
-            command.Parameters.AddWithValue("@Id", Guid.NewGuid());
+            command.Parameters.AddWithValue("@Id", newFormula.Id);
             command.Parameters.AddWithValue("@Name", newFormula.Name);
             command.Parameters.AddWithValue("@Horsepower", newFormula.Horsepower);
             command.Parameters.AddWithValue("@TopSpeed", newFormula.TopSpeed);
             command.Parameters.AddWithValue("@Acceleration", newFormula.Acceleration);
-            command.Parameters.AddWithValue("@IsActive", true);
+            command.Parameters.AddWithValue("@IsActive", newFormula.IsActive);
 
             int commits = await command.ExecuteNonQueryAsync();
             _connection.Close();
@@ -60,16 +60,10 @@ namespace Racing.Repository
         public async Task<int> PutAsync(Formula newFormula, Guid id)
         {
             NpgsqlConnection _connection = new NpgsqlConnection(connectionString);
-
-            string cmdText = "UPDATE \"Formula\" SET \"Name\"=@Name, \"Horsepower\"=@Horsepower, \"TopSpeed\"=@TopSpeed, \"Acceleration\"=@Acceleration,\"IsActive\"=@IsActive WHERE \"Formula\".\"Id\"=@Id";
-            NpgsqlCommand command = new NpgsqlCommand(cmdText, _connection);
+            NpgsqlCommand command = new NpgsqlCommand("", _connection);
+            command = MakeCommandUpdateFormula(newFormula, id, command);
             _connection.Open();
-            command.Parameters.AddWithValue("@Id", id);
-            command.Parameters.AddWithValue("@Name", newFormula.Name);
-            command.Parameters.AddWithValue("@Horsepower", newFormula.Horsepower);
-            command.Parameters.AddWithValue("@TopSpeed", newFormula.TopSpeed);
-            command.Parameters.AddWithValue("@Acceleration", newFormula.Acceleration);
-            command.Parameters.AddWithValue("@IsActive", true);
+
             int commits = await command.ExecuteNonQueryAsync();
             _connection.Close();
             return commits;
@@ -120,7 +114,7 @@ namespace Racing.Repository
 
             IList<Formula> formulas = new List<Formula>();
             NpgsqlCommand command = new NpgsqlCommand("", _connection);
-            command = MakeCommand(filter,sort,command);
+            command = MakeCommandGetAll(filter, sort, command);
             _connection.Open();
             using (var reader = command.ExecuteReader())
             {
@@ -141,7 +135,7 @@ namespace Racing.Repository
             return formulas;
         }
 
-        private NpgsqlCommand MakeCommand(FormulaFilter filter, FormulaSort sort,NpgsqlCommand command)
+        private NpgsqlCommand MakeCommandGetAll(FormulaFilter filter, FormulaSort sort, NpgsqlCommand command)
         {
             StringBuilder builder = new StringBuilder();
             builder.Append("SELECT * FROM \"Formula\" WHERE \"IsActive\" =@IsActive ");
@@ -151,7 +145,7 @@ namespace Racing.Repository
             {
                 builder.Append("AND \"TopSpeed\">@MinTopSpeed ");
                 command.Parameters.AddWithValue("MinTopSpeed", filter.MinTopSpeed);
-                
+
             }
             if (filter.MaxTopSpeed != null && filter.MinTopSpeed == null)
             {
@@ -170,8 +164,41 @@ namespace Racing.Repository
                 command.Parameters.AddWithValue("Name", filter.Name);
             }
             builder.Append($" ORDER BY \"{sort.OrderBy}\" {sort.OrderDirection}");
-            command.CommandText= builder.ToString();
+            command.CommandText = builder.ToString();
             return command;
         }
+        private NpgsqlCommand MakeCommandUpdateFormula(Formula newFormula, Guid id, NpgsqlCommand command)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append("UPDATE \"Formula\" SET \"Id\" = @Id");
+            command.Parameters.AddWithValue("@Id", id);
+            if (newFormula.Horsepower != null)
+            {
+                builder.Append(" , \"Horsepower\"= @Horsepower");
+                command.Parameters.AddWithValue("@Horsepower", newFormula.Horsepower);
+
+            }
+            if (newFormula.Acceleration != null)
+            {
+                builder.Append(" , \"Acceleration\"= @Acceleration");
+                command.Parameters.AddWithValue("@Acceleration", newFormula.Acceleration);
+            }
+            if (newFormula.TopSpeed != null)
+            {
+                builder.Append(" , \"TopSpeed\"= @TopSpeed");
+                command.Parameters.AddWithValue("@TopSpeed", newFormula.TopSpeed);
+            }
+            if (!string.IsNullOrEmpty(newFormula.Name))
+            {
+                builder.Append(" , \"Name\"= @Name");
+                command.Parameters.AddWithValue("@Name", newFormula.Name);
+
+            }
+            builder.Append(" WHERE \"Id\"=   @Id");
+            string cmdText = builder.ToString();
+            command.CommandText = cmdText;
+            return command;
+        }
+
     }
 }

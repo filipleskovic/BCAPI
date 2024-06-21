@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="css/index.css">
+	<title>Document</title>
+</head>
+<body>
+	<nav>
+		<ul>
+			<li><a href="index.html">Home</a></li>
+			<li><a href="drivers.html">Vozaći</a></li>
+			<li><a href="formula.html">Formule</a></li>
+			<li><a href="race.html">Utrka</a></li>
+		</ul>
+		<h2>FORMULE</h2>
+	</nav>
+	<main>
+		<table>
+			<caption>Popis formula</caption>
+			<thead>
+				<th>Id formule</th>
+				<th>Ime</th>
+				<th>Konjska snaga</th>
+				<th>Najveća brzina</th>
+				<th>Akceleracija</th>
+				<th>Actions</th>
+			</thead>
+			<tbody id="id">
+			</tbody>
+		</table>
+		<script src="index.js"></script>
+	<div id="updateForm" style="display: none;">
+   		<h2>Formula Update</h2>
+		<p>ID: <span id="spanformulaid"></span></p>
+		<form id="update">
+			<input type="text" name="Ime" id="updateName" placeholder="Ime Formule">
+			<input type="number" name ="Konjska snaga" id="updateHorsepower" placeholder="Konjska snaga">
+			<input type="number" name ="Brzina" id="updateTopspeed" placeholder="Brzina">
+			<input type="number" name ="Akceleracija" id="updateAcceleration" placeholder="Akceleracija">
+		</form>	
+		<button id="updateButton">Update</button>
+		<button id="closeButton">Close</button>
+	</div>
+		<div>
+			<h2>Unesite formulu</h2>
+			<form id="insertFormula">
+				<input type="text" name="Ime" id="name" placeholder="Ime Formule">
+				<input type="number" name ="Konjska snaga" id="horsepower" placeholder="Konjska snaga">
+				<input type="number" name ="Brzina" id="topspeed" placeholder="Brzina">
+				<input type="number" name ="Akceleracija" id="acceleration" placeholder="Akceleracija">
+				<input type="submit" name="submit" id="submit" >
+			</form>
+		</div>
+	</main>
+</body>
+</html>

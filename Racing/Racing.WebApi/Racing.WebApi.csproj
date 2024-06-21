@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="9.0.0" />
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="Npgsql" Version="8.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
@@ -16,8 +17,8 @@
     <ProjectReference Include="..\Racing.Models\Racing.Models.csproj" />
     <ProjectReference Include="..\Racing.Repository\Racing.Repository.csproj" />
     <ProjectReference Include="..\Racing.Service\Racing.Service.csproj" />
-    <ProjectReference Include="..\Repository.Common\Repository.Common.csproj" />
-    <ProjectReference Include="..\Service.Common\Service.Common.csproj" />
+    <ProjectReference Include="..\Repository.Common\Racing.Repository.Common.csproj" />
+    <ProjectReference Include="..\Service.Common\Racing.Service.Common.csproj" />
   </ItemGroup>
 
 </Project>
