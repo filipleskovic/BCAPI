@@ -2,6 +2,13 @@ import React, { useEffect, useState } from 'react';
 import FormulaRow from './FormulaRow'
 import Form from './Form'
 import EditFormulaForm from './EditFormulaForm';
+const columns = [
+	{ key: 'id', label: 'Id' },
+	{ key: 'name', label: 'Name' },
+	{ key: 'horsepower', label: 'Horsepower' },
+	{ key: 'topspeed', label: 'TopSpeed' },
+	{ key: 'accelearation', label: 'Acceleration' }
+];
 const formulas = [
 	{
 		id: 3323,
@@ -66,7 +73,7 @@ const FormulaTable = () => {
 	};
 
 	const handleCancelEdit = () => {
-		setEditingFormula(null); // Zatvaranje forme za uređivanje bez ažuriranja
+		setEditingFormula(null);
 	};
 
 	return (

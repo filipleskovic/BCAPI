@@ -1,30 +1,34 @@
-import React from 'react';
+import React, { Component } from 'react';
 import './FormulaRow.css';
-function Button({ text }) {
-	<button>{text}</button>
-}
-const FormulaRow = ({ formulaRow, onDelete, onUpdate }) => {
-	const handleDelete = () => {
+
+class FormulaRow extends Component {
+	handleDelete = () => {
+		const { onDelete, formulaRow } = this.props;
 		onDelete(formulaRow.id);
 	};
-	const handleUpdate = () => {
-		onUpdate(formulaRow.id);
-	}
 
-	return (
-		<tr>
-			<td>{formulaRow.id}</td>
-			<td>{formulaRow.name}</td>
-			<td>{formulaRow.horsepower}</td>
-			<td>{formulaRow.topspeed}</td>
-			<td>{formulaRow.acceleration}</td>
-			<td>
-				<button onClick={handleUpdate}>Update</button>
-				<button onClick={handleDelete}>Delete</button>
-			</td>
-		</tr>
-	);
-};
+	handleUpdate = () => {
+		const { onUpdate, formulaRow } = this.props;
+		onUpdate(formulaRow.id);
+	};
+
+	render() {
+		const { formulaRow } = this.props;
+
+		return (
+			<tr>
+				<td>{formulaRow.id}</td>
+				<td>{formulaRow.name}</td>
+				<td>{formulaRow.horsepower}</td>
+				<td>{formulaRow.topspeed}</td>
+				<td>{formulaRow.acceleration}</td>
+				<td>
+					<button onClick={this.handleUpdate}>Update</button>
+					<button onClick={this.handleDelete}>Delete</button>
+				</td>
+			</tr>
+		);
+	}
+}
 
 export default FormulaRow;
-	

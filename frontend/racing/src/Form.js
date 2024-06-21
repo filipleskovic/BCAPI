@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Formula from './FormulaRow'
 import "./Form.css"
 
 export default function Form({ onSubmit }) {
@@ -7,17 +6,19 @@ export default function Form({ onSubmit }) {
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
-		setFormData({...formData,[name]: value
+		setFormData({
+			...formData, [name]: value
 		});
 	};
 
 	const handleSubmit = (e) => {
+		e.preventDefault();
 		const newFormula = {
 			id: Math.floor(1000 + Math.random() * 9000),
 			...formData
 		};
 		onSubmit(newFormula);
-		setFormData({ name: '', horsepower: '', topspeed: '', acceleration: '' }); 
+		setFormData({ name: '', horsepower: '', topspeed: '', acceleration: '' });
 	};
 
 	return (
