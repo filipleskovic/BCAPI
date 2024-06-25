@@ -15,7 +15,7 @@ namespace Racing.Service
         {
             return await _repository.GetAsync(id);
         }
-        public async Task<int> PostAsync(Driver driver)
+        public async Task<Driver> PostAsync(Driver driver)
         {
             return await _repository.PostAsync(driver);
         }

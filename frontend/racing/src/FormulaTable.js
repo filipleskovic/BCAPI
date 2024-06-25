@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import FormulaRow from './FormulaRow'
 import Form from './Form'
 import EditFormulaForm from './EditFormulaForm';
+import axios from 'axios';
+import { fetchFormulas, postFormula, putFormula, removeFormula } from './services';
+
 const columns = [
 	{ key: 'id', label: 'Id' },
 	{ key: 'name', label: 'Name' },
@@ -40,30 +43,39 @@ const FormulaTable = () => {
 	const [editingFormula, setEditingFormula] = useState(null);
 
 	useEffect(() => {
-		const storedData = localStorage.getItem('formulas');
-		if (storedData) {
-			setRows(JSON.parse(storedData));
-		}
+		const fetchData = async () => {
+			try {
+				const formulas = await fetchFormulas();
+				setRows(formulas);
+			} catch (error) {
+				console.error("Nije dohvaceno", error);
+			}
+		};
+
+		fetchData();
 	}, []);
 
-	const addFormula = (newFormula) => {
-		const updatedRows = [...rows, newFormula];
-		setRows(updatedRows);
-		localStorage.setItem('formulas', JSON.stringify(updatedRows));
+	const addFormula = async (newFormula) => {
+		await postFormula(newFormula)
+		const formulas = await fetchFormulas();
+		setRows(formulas)
 	};
 
-	const deleteFormula = (id) => {
+	const deleteFormula = async (id) => {
 		const updatedRows = rows.filter((formula) => formula.id !== id);
+		await removeFormula(id)
 		setRows(updatedRows);
-		localStorage.setItem('formulas', JSON.stringify(updatedRows));
+
 	};
 
-	const updateFormula = (updatedFormula) => {
+	const updateFormula = async (updatedFormula) => {
 		const updatedRows = rows.map((formula) =>
 			formula.id === updatedFormula.id ? updatedFormula : formula
 		);
-		setRows(updatedRows);
-		localStorage.setItem('formulas', JSON.stringify(updatedRows));
+		console.log(updatedFormula)
+		await putFormula(updatedFormula)
+		const formulas = await fetchFormulas();
+		setRows(formulas)
 		setEditingFormula(null);
 	};
 
@@ -89,7 +101,6 @@ const FormulaTable = () => {
 				<caption>Formule</caption>
 				<thead>
 					<tr>
-						<th>Id</th>
 						<th>Ime</th>
 						<th>Horsepower</th>
 						<th>Topspeed</th>

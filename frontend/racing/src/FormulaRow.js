@@ -17,10 +17,9 @@ class FormulaRow extends Component {
 
 		return (
 			<tr>
-				<td>{formulaRow.id}</td>
 				<td>{formulaRow.name}</td>
 				<td>{formulaRow.horsepower}</td>
-				<td>{formulaRow.topspeed}</td>
+				<td>{formulaRow.topSpeed}</td>
 				<td>{formulaRow.acceleration}</td>
 				<td>
 					<button onClick={this.handleUpdate}>Update</button>

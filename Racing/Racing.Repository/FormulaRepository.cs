@@ -38,7 +38,7 @@ namespace Racing.Repository
             _connection.Close();
             return formula;
         }
-        public async Task<int> PostAsync(Formula newFormula)
+        public async Task<Formula> PostAsync(Formula newFormula)
         {
 
             NpgsqlConnection _connection = new NpgsqlConnection(connectionString);
@@ -55,7 +55,7 @@ namespace Racing.Repository
 
             int commits = await command.ExecuteNonQueryAsync();
             _connection.Close();
-            return commits;
+            return newFormula;
         }
         public async Task<int> PutAsync(Formula newFormula, Guid id)
         {

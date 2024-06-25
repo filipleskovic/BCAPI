@@ -40,13 +40,13 @@ namespace Racing.WebApi.Controllers
             }
             try
             {
-                int commits = await _Service.PostAsync(newDriver);
+                Driver driver = await _Service.PostAsync(newDriver);
 
-                if (commits == 0)
+                if (driver == null)
                 {
                     return BadRequest();
                 }
-                return Ok($"Dodano vozaća: {commits}");
+                return Ok(driver);
             }
             catch (Exception ex)
             {
