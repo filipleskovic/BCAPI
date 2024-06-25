@@ -2,8 +2,11 @@ import React, { useEffect, useState } from 'react';
 import FormulaRow from './FormulaRow'
 import Form from './Form'
 import EditFormulaForm from './EditFormulaForm';
-import axios from 'axios';
-import { fetchFormulas, postFormula, putFormula, removeFormula } from './services';
+import FilterForm from './FilterForm'
+import { fetchFormulas, postFormula, putFormula, removeFormula, filteredFormulas } from './services';
+import './FormulaRow.css'
+
+
 
 const columns = [
 	{ key: 'id', label: 'Id' },
@@ -87,9 +90,13 @@ const FormulaTable = () => {
 	const handleCancelEdit = () => {
 		setEditingFormula(null);
 	};
+	const filterFormulas = async (filter) => {
+		const formulas = await filteredFormulas(filter)
+		setRows(formulas)
+	}
 
 	return (
-		<div>
+		<div class="divRow">
 			{editingFormula && (
 				<EditFormulaForm
 					formula={editingFormula}
@@ -97,18 +104,18 @@ const FormulaTable = () => {
 					onCancel={handleCancelEdit}
 				/>
 			)}
-			<table>
-				<caption>Formule</caption>
+			<FilterForm onSubmit={filterFormulas}></FilterForm>
+			<table >
 				<thead>
 					<tr>
 						<th>Ime</th>
 						<th>Horsepower</th>
-						<th>Topspeed</th>
+						<th>TopSpeed</th>
 						<th>Acceleration</th>
 						<th>Actions</th>
 					</tr>
 				</thead>
-				<tbody>
+				<tbody style={{ border: "2px solid #2E294E" }}>
 					{rows.map((formula) => (
 						<FormulaRow
 							key={formula.id}
@@ -120,7 +127,7 @@ const FormulaTable = () => {
 				</tbody>
 			</table>
 			<Form onSubmit={addFormula} />
-		</div>
+		</div >
 	);
 };
 

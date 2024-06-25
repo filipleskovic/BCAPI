@@ -4,12 +4,12 @@ import "./Form.css"
 export default function Form({ onSubmit }) {
 	const [formData, setFormData] = useState({});
 
-	const handleChange = (e) => {
-		const { name, value } = e.target;
-		setFormData({
-			...formData, [name]: value
-		});
-	};
+		const handleChange = (e) => {
+			const { name, value } = e.target;
+			setFormData({
+				...formData, [name]: value
+			});
+		};
 
 	const handleSubmit = (e) => {
 		e.preventDefault();

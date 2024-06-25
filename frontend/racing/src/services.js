@@ -47,3 +47,12 @@ export const removeFormula = async (id) => {
 		console.error('There was an error deleting the formula!', error);
 	}
 }
+export const filteredFormulas = async (filter) => {
+	try {
+		const response = await formulaClient.get('FilteredFormulas', { params: filter });
+		return response.data;
+	} catch (error) {
+		console.error('There was an error filtering the formulas!', error);
+		throw error;
+	}
+}
