@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import "./Form.css"
+import { useAuth } from './AuthProvider';
 
 export default function Form({ onSubmit }) {
 	const [formData, setFormData] = useState({});
+	const { user, logout } = useAuth();
 
-		const handleChange = (e) => {
-			const { name, value } = e.target;
-			setFormData({
-				...formData, [name]: value
-			});
-		};
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+		setFormData({
+			...formData, [name]: value
+		});
+	};
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -27,7 +29,7 @@ export default function Form({ onSubmit }) {
 				<input type="number" name="horsepower" placeholder="Konjska snaga" value={formData.horsepower} onChange={handleChange} required />
 				<input type="number" name="topSpeed" placeholder="Brzina" value={formData.topSpeed} onChange={handleChange} required />
 				<input type="number" name="acceleration" placeholder="Akceleracija" value={formData.acceleration} onChange={handleChange} required />
-				<button type="submit">Submit</button>
+				<button type="submit" class="buttonForm">Submit</button>
 			</form>
 		</div>
 	);

@@ -1,39 +1,33 @@
 import './App.css';
 import FormulaTable from './FormulaTable'
-import Form from './Form'
 import React from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import EditFormulaForm from './EditFormulaForm';
+import EditPage from './EditPage';
+import InsertPage from './InsertPage';
+import HomePage from './HomePage';
+import DriverTable from './DriverTable';
+import { AuthProvider } from './AuthProvider';
+import Login from './Login'
+import Navigation from './Navigation';
 
 function App() {
 
   return (
-    <div>
-      <nav className="navbar navbar-expand navbar-dark bg-dark">
-        <div className="navbar-nav mr-auto">
-          <li className="nav-item">
-            <Link to={"/formulas"} className="nav-link">
-              Formulas
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link to={"/drivers"} className="nav-link">
-              Drivers
-            </Link>
-          </li>
-        </div>
-      </nav>
-
+    <AuthProvider>
+      <Navigation />
       <div className="container mt-3">
         <Routes>
-          <Route path="/" element={<FormulaTable />} />
+          <Route path="/" element={<HomePage />} />
           <Route path="/formulas" element={<FormulaTable />} />
-          <Route path="/edit/:formulaId" element={<EditFormulaForm />} />
+          <Route path="/edit/:formulaId" element={<EditPage />} />
+          <Route path="/insert/" element={<InsertPage />} />
+          <Route path="/drivers" element={<DriverTable />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </div>
-    </div>
-
+    </AuthProvider >
   );
 }
+
 export default App;

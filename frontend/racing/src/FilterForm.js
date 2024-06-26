@@ -27,9 +27,19 @@ const FilterForm = ({ onSubmit }) => {
 			<input type="text" name="name" placeholder="FilterByNname" value={formData.fileredName} onChange={handleChange} />
 			<input type="number" name="minTopSpeed" placeholder="MinTopSpeed" value={formData.minTopSpeed} onChange={handleChange} />
 			<input type="number" name="maxTopSpeed" placeholder="MaxTopSpeed" value={formData.maxTopSpeed} onChange={handleChange} />
-			<input type="text" name="orderBy" placeholder="orderBy" value={formData.orderBy} onChange={handleChange} />
-			<input type="text" name="orderDirection" placeholder="DESC/ASC" value={formData.direction} onChange={handleChange} />
-			<button type="submit">Filter</button>
+			<select name="orderBy" value={formData.orderBy} onChange={handleChange}>
+				<option value="">OrderBy</option>
+				<option value="name">Name</option>
+				<option value="horsepower">Horsepower</option>
+				<option value="topSpeed">TopSpeed</option>
+				<option value="acceleration">Acceleration</option>
+			</select>
+			<select name="orderDirection" value={formData.orderDirection} onChange={handleChange}>
+				<option value="">OrderDirection</option>
+				<option value="ASC">ASC</option>
+				<option value="DESC">DESC</option>
+			</select>
+			<button type="submit" className="buttonForm">Filter</button>
 		</form>
 	)
 }

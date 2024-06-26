@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import FormulaRow from './FormulaRow'
-import Form from './Form'
-import EditFormulaForm from './EditFormulaForm';
 import FilterForm from './FilterForm'
-import { fetchFormulas, postFormula, putFormula, removeFormula, filteredFormulas } from './services';
+import { Link } from 'react-router-dom';
+import { fetchFormulas, postFormula, removeFormula, filteredFormulas } from './services';
 import './FormulaRow.css'
+import { useAuth } from './AuthProvider';
 
 
 
@@ -44,6 +44,8 @@ localStorage.setItem('formulas', JSON.stringify(formulas));
 const FormulaTable = () => {
 	const [rows, setRows] = useState([]);
 	const [editingFormula, setEditingFormula] = useState(null);
+	const [deleteDiv, setDeleteDiv] = useState(false);
+	const [formulaToDelete, setFormulaToDelete] = useState()
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -68,47 +70,34 @@ const FormulaTable = () => {
 		const updatedRows = rows.filter((formula) => formula.id !== id);
 		await removeFormula(id)
 		setRows(updatedRows);
+		setDeleteDiv(false)
 
 	};
-
-	const updateFormula = async (updatedFormula) => {
-		const updatedRows = rows.map((formula) =>
-			formula.id === updatedFormula.id ? updatedFormula : formula
-		);
-		console.log(updatedFormula)
-		await putFormula(updatedFormula)
-		const formulas = await fetchFormulas();
-		setRows(formulas)
-		setEditingFormula(null);
-	};
-
+	const deleteApprove = (id) => {
+		setDeleteDiv(true);
+		setFormulaToDelete(id);
+	}
+	const deleteCancel = () => {
+		setDeleteDiv(false)
+	}
 	const handleUpdateClick = (id) => {
 		const formulaToEdit = rows.find((formula) => formula.id === id);
 		setEditingFormula(formulaToEdit);
 	};
 
-	const handleCancelEdit = () => {
-		setEditingFormula(null);
-	};
 	const filterFormulas = async (filter) => {
 		const formulas = await filteredFormulas(filter)
 		setRows(formulas)
 	}
-
+	const { user, logout } = useAuth();
 	return (
+
 		<div class="divRow">
-			{editingFormula && (
-				<EditFormulaForm
-					formula={editingFormula}
-					onUpdate={updateFormula}
-					onCancel={handleCancelEdit}
-				/>
-			)}
 			<FilterForm onSubmit={filterFormulas}></FilterForm>
 			<table >
 				<thead>
 					<tr>
-						<th>Ime</th>
+						<th>Name</th>
 						<th>Horsepower</th>
 						<th>TopSpeed</th>
 						<th>Acceleration</th>
@@ -120,13 +109,30 @@ const FormulaTable = () => {
 						<FormulaRow
 							key={formula.id}
 							formulaRow={formula}
-							onDelete={deleteFormula}
+							onDelete={deleteApprove}
 							onUpdate={() => handleUpdateClick(formula.id)}
 						/>
 					))}
 				</tbody>
 			</table>
-			<Form onSubmit={addFormula} />
+			{
+				deleteDiv && (
+					<div className='deleteDiv'>
+						<h2>Sure you want to delete this item ?</h2>
+						<button type="button" style={{ color: "green" }} onClick={() => deleteFormula(formulaToDelete)}>Yes</button>
+						<button type="button" style={{ color: "red" }} onClick={deleteCancel}>No</button>
+					</div>
+				)
+			}
+			<data value="">
+
+			</data>
+			{user && (<div>
+				<Link to={'/insert'} className="nav-link">
+					<button className="buttonForm" >Insert</button>
+				</Link>
+			</div>
+			)}
 		</div >
 	);
 };

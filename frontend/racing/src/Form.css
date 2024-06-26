@@ -4,6 +4,38 @@ form {
 }
 
 input {
-	margin-bottom: 15px;
+	padding: 15px;
+	margin-top: 30px;
 	width: 350px;
+}
+
+select {
+	padding: 15px;
+	margin-top: 30px;
+	width: 350px;
+}
+
+.buttonForm {
+	margin-top: 15px;
+	width: 350px;
+}
+
+.deleteDiv {
+	position: fixed;
+	/* Pozicionira element relativno prema prozoru pretraživača */
+	top: 50%;
+	/* Centriranje po vertikali */
+	left: 50%;
+	/* Centriranje po horizontali */
+	transform: translate(-50%, -50%);
+	/* Pomicanje elementa na sredinu */
+	z-index: 1000;
+	/* Osigurava da je element iznad svih ostalih */
+	background-color: black;
+	color: white;
+	padding: 20px;
+	/* Dodavanje razmaka unutar elementa */
+	border-radius: 10px;
+	/* Zaobljeni rubovi */
+	border: 5px solid #F46036;
 }

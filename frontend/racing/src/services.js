@@ -10,7 +10,15 @@ const formulaClient = axios.create({
 		'Content-Type': 'application/json'
 	}
 });
-
+export const fetchFormula = async (id) => {
+	try {
+		const response = await formulaClient.get(`GetFormula/${id}`);
+		return response.data;
+	} catch (error) {
+		console.error('Error fetching formulas:', error);
+		throw error;
+	}
+}
 export const fetchFormulas = async () => {
 	try {
 		const response = await formulaClient.get('Formulas');
