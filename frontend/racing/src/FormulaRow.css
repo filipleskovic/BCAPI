@@ -1,18 +1,26 @@
 table {
 	margin: 10px;
 	border-collapse: collapse;
+	border: 2px solid black;
+}
+
+tr {
+	border: 2px solid black;
 }
 
 th {
 	background-color: #F46036;
+	border: 2px solid black;
+	padding: 8px;
+	text-align: center;
+	color: #2E294E
 }
 
-th,
 td {
 	border: 2px solid #2E294E;
 	padding: 8px;
 	text-align: center;
-	color: #2E294E
+	color: #F46036
 }
 
 caption {

@@ -2,6 +2,8 @@
 using Npgsql;
 using Racing.Models;
 using System.Text;
+using System.Data.SqlClient;
+
 using Repository.Common;
 namespace Racing.Repository
 {
@@ -38,7 +40,7 @@ namespace Racing.Repository
             _connection.Close();
             return formula;
         }
-        public async Task<int> PostAsync(Formula newFormula)
+        public async Task<Formula> PostAsync(Formula newFormula)
         {
 
             NpgsqlConnection _connection = new NpgsqlConnection(connectionString);
@@ -55,7 +57,7 @@ namespace Racing.Repository
 
             int commits = await command.ExecuteNonQueryAsync();
             _connection.Close();
-            return commits;
+            return newFormula;
         }
         public async Task<int> PutAsync(Formula newFormula, Guid id)
         {
@@ -163,9 +165,52 @@ namespace Racing.Repository
                 builder.Append("AND \"Name\" LIKE @Name");
                 command.Parameters.AddWithValue("Name", filter.Name);
             }
-            builder.Append($" ORDER BY \"{sort.OrderBy}\" {sort.OrderDirection}");
+            var columns = GetTableColumns(connectionString, "Formula");
+            if((sort.OrderDirection == "DESC" || sort.OrderDirection == "ASC") && columns.Contains(sort.OrderBy)) 
+            {
+                builder.Append($" ORDER BY \"{sort.OrderBy}\" {sort.OrderDirection}");
+            }
+            else
+            {
+                builder.Append($" ORDER BY \"Name\" ASC");
+            }
             command.CommandText = builder.ToString();
             return command;
+        }
+        public static List<string> GetTableColumns(string connectionString, string tableName)
+        {
+            List<string> columns = new List<string>();
+
+            string query = @"
+                SELECT COLUMN_NAME
+                FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE TABLE_NAME = @TableName";
+
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
+            {
+                using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@TableName", tableName);
+
+                    try
+                    {
+                        connection.Open();
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                columns.Add(reader["COLUMN_NAME"].ToString());
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Dogodila se greška: " + ex.Message);
+                    }
+                }
+            }
+
+            return columns;
         }
         private NpgsqlCommand MakeCommandUpdateFormula(Formula newFormula, Guid id, NpgsqlCommand command)
         {
@@ -202,3 +247,4 @@ namespace Racing.Repository
 
     }
 }
+
