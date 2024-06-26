@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import FormulaRow from './FormulaRow'
-import Form from './Form'
-import EditFormulaForm from './EditFormulaForm';
+import FilterForm from './FilterForm'
+import { Link } from 'react-router-dom';
+import { fetchFormulas, postFormula, removeFormula, filteredFormulas } from './services';
+import './FormulaRow.css'
+import { useAuth } from './AuthProvider';
+
+
+
 const columns = [
 	{ key: 'id', label: 'Id' },
 	{ key: 'name', label: 'Name' },
@@ -38,78 +44,96 @@ localStorage.setItem('formulas', JSON.stringify(formulas));
 const FormulaTable = () => {
 	const [rows, setRows] = useState([]);
 	const [editingFormula, setEditingFormula] = useState(null);
+	const [deleteDiv, setDeleteDiv] = useState(false);
+	const [formulaToDelete, setFormulaToDelete] = useState()
 
 	useEffect(() => {
-		const storedData = localStorage.getItem('formulas');
-		if (storedData) {
-			setRows(JSON.parse(storedData));
-		}
+		const fetchData = async () => {
+			try {
+				const formulas = await fetchFormulas();
+				setRows(formulas);
+			} catch (error) {
+				console.error("Nije dohvaceno", error);
+			}
+		};
+
+		fetchData();
 	}, []);
 
-	const addFormula = (newFormula) => {
-		const updatedRows = [...rows, newFormula];
-		setRows(updatedRows);
-		localStorage.setItem('formulas', JSON.stringify(updatedRows));
+	const addFormula = async (newFormula) => {
+		await postFormula(newFormula)
+		const formulas = await fetchFormulas();
+		setRows(formulas)
 	};
 
-	const deleteFormula = (id) => {
+	const deleteFormula = async (id) => {
 		const updatedRows = rows.filter((formula) => formula.id !== id);
+		await removeFormula(id)
 		setRows(updatedRows);
-		localStorage.setItem('formulas', JSON.stringify(updatedRows));
-	};
+		setDeleteDiv(false)
 
-	const updateFormula = (updatedFormula) => {
-		const updatedRows = rows.map((formula) =>
-			formula.id === updatedFormula.id ? updatedFormula : formula
-		);
-		setRows(updatedRows);
-		localStorage.setItem('formulas', JSON.stringify(updatedRows));
-		setEditingFormula(null);
 	};
-
+	const deleteApprove = (id) => {
+		setDeleteDiv(true);
+		setFormulaToDelete(id);
+	}
+	const deleteCancel = () => {
+		setDeleteDiv(false)
+	}
 	const handleUpdateClick = (id) => {
 		const formulaToEdit = rows.find((formula) => formula.id === id);
 		setEditingFormula(formulaToEdit);
 	};
 
-	const handleCancelEdit = () => {
-		setEditingFormula(null);
-	};
-
+	const filterFormulas = async (filter) => {
+		const formulas = await filteredFormulas(filter)
+		setRows(formulas)
+	}
+	const { user, logout } = useAuth();
 	return (
-		<div>
-			{editingFormula && (
-				<EditFormulaForm
-					formula={editingFormula}
-					onUpdate={updateFormula}
-					onCancel={handleCancelEdit}
-				/>
-			)}
-			<table>
-				<caption>Formule</caption>
+
+		<div class="divRow">
+			<FilterForm onSubmit={filterFormulas}></FilterForm>
+			<table >
 				<thead>
 					<tr>
-						<th>Id</th>
-						<th>Ime</th>
+						<th>Name</th>
 						<th>Horsepower</th>
-						<th>Topspeed</th>
+						<th>TopSpeed</th>
 						<th>Acceleration</th>
 						<th>Actions</th>
 					</tr>
 				</thead>
-				<tbody>
+				<tbody style={{ border: "2px solid #2E294E" }}>
 					{rows.map((formula) => (
 						<FormulaRow
 							key={formula.id}
 							formulaRow={formula}
-							onDelete={deleteFormula}
+							onDelete={deleteApprove}
 							onUpdate={() => handleUpdateClick(formula.id)}
 						/>
 					))}
 				</tbody>
 			</table>
-			<Form onSubmit={addFormula} />
-		</div>
+			{
+				deleteDiv && (
+					<div className='deleteDiv'>
+						<h2>Sure you want to delete this item ?</h2>
+						<button type="button" style={{ color: "green" }} onClick={() => deleteFormula(formulaToDelete)}>Yes</button>
+						<button type="button" style={{ color: "red" }} onClick={deleteCancel}>No</button>
+					</div>
+				)
+			}
+			<data value="">
+
+			</data>
+			{user && (<div>
+				<Link to={'/insert'} className="nav-link">
+					<button className="buttonForm" >Insert</button>
+				</Link>
+			</div>
+			)}
+		</div >
 	);
 };
 

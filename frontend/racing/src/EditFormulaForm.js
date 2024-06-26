@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import "./Form.css"
 
 const EditFormulaForm = ({ formula, onUpdate, onCancel }) => {
 	const [editedFormula, setEditedFormula] = useState({
@@ -14,7 +16,7 @@ const EditFormulaForm = ({ formula, onUpdate, onCancel }) => {
 			id: formula.id,
 			name: formula.name,
 			horsepower: formula.horsepower,
-			topspeed: formula.topspeed,
+			topSpeed: formula.topSpeed,
 			acceleration: formula.acceleration,
 		});
 	}, [formula]);
@@ -36,11 +38,11 @@ const EditFormulaForm = ({ formula, onUpdate, onCancel }) => {
 				<label>Horsepower:</label>
 				<input type="number" name="horsepower" value={editedFormula.horsepower} onChange={handleChange} />
 				<label>Topspeed:</label>
-				<input type="number" name="topspeed" value={editedFormula.topspeed} onChange={handleChange} />
+				<input type="number" name="topSpeed" value={editedFormula.topSpeed} onChange={handleChange} />
 				<label>Acceleration:</label>
 				<input type="number" name="acceleration" value={editedFormula.acceleration} onChange={handleChange} />
-				<button type="button" onClick={handleUpdate}>Update</button>
-				<button type="button" onClick={onCancel}>Cancel</button>
+				<button type="button" class="buttonForm" onClick={handleUpdate}>Update</button>
+				<button type="button" class="buttonForm" onClick={onCancel}>Cancel</button>
 			</form>
 		</div>
 	);

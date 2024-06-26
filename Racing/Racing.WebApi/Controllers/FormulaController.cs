@@ -53,13 +53,13 @@ namespace Racing.WebApi.Controllers
             }
             try
             {
-                int commits = await _service.PostAsync(_mapper.Map<Formula>(newFormula));
+                Formula formula = await _service.PostAsync(_mapper.Map<Formula>(newFormula));
 
-                if (commits == 0)
+                if (formula == null)
                 {
                     return BadRequest();
                 }
-                return Ok($"Dodano formula: {commits}");
+                return Ok(formula);
             }
             catch (Exception ex)
             {
@@ -120,7 +120,12 @@ namespace Racing.WebApi.Controllers
             try
             {
                 IList<Formula> formulas = await _service.GetAllAsync();
-                return Ok(formulas);
+                IList<FormulaGet> formulasGet = new List<FormulaGet>();
+                foreach (Formula formula in formulas)
+                {
+                    formulasGet.Add(_mapper.Map<FormulaGet>(formula));
+                }
+                return Ok(formulasGet);
             }
             catch (Exception ex)
             {

@@ -36,7 +36,7 @@ namespace Racing.Repository
 
             return driver;
         }
-        public async Task<int> PostAsync(Driver newDriver)
+        public async Task<Driver> PostAsync(Driver newDriver)
         {
 
             NpgsqlConnection _connection = new NpgsqlConnection(connectionString);
@@ -53,7 +53,7 @@ namespace Racing.Repository
 
             int commits = await command.ExecuteNonQueryAsync();
             _connection.Close();
-            return commits;
+            return newDriver;
         }
         public async Task<int> PutAsync(Driver newDriver, Guid id)
         {
